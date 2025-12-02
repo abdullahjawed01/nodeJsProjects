@@ -1,57 +1,91 @@
+import express from "express"
+
+const app = express()
+app.use(express.json())
 
 
-const shayri = [
-  "Dil ke dariya ko kabhi shor machane mat dena, dard jitna gehra ho utna chup rehna behtar hota hai.",
-  "Mohabbat me jeet unki hoti hai jo bina kahe samajh jaate hain.",
-  "Har kisi ko mukammal jahaan nahi milta, kisi ko zameen nahi milti kisi ko aasman nahi milta.",
-  "Waqt hi to hai, guzar hi jayega; zakhm kitne bhi gehre ho bhar hi jayenge.",
-  "Tum chale jaoge to sochenge hum, tumhe kaise rok lete.",
-  "Wo bewafa bhi ajeeb nikli, dil tod kar kehti hai tum badal gaye ho.",
-  "Dil dukhe to chup rehna behtar, kyunki log tasalli nahi tamasha dekhte hain.",
-  "Mohabbat me aansu tab nikalte hain jab baat dil se zyada ego ki suni jaye.",
-  "Tumhare bina ab jeena mushkil nahi, bas maza nahi aata.",
-  "Kabhi kabhi sab kuch hote hue bhi dil khali sa lagta hai.",
-  "Wo keh ke gaya tha laut kar aayega, maine ye nahi poocha tha ki kis roop me.",
-  "Rishte toot jaaye to samajh lena ke humne koi kasoor nahi kiya, bas waqt badal gaya.",
-  "Mohabbat me sabse zyada takleef us waqt hoti hai jab koi apna paraya sa lagne lage.",
-  "Aankhon me aansu tab aate hain jab alfaaz kamm pad jaate hain.",
-  "Tumhari yaadon ka bas ek hi nuksan hai, ye sone nahi deti.",
-  "Haath chhute bhi to rishta nahi chhuta karta.",
-  "Jis din tum hume bhool jaoge, us din hum mar nahi jaayenge par jeena chhod denge.",
-  "Main uss din se poochu kya guzri hogi jis din usne mujhe chhod kar kisi aur ka haath thaama hoga.",
-  "Patthar ke dil par bhi nishaan reh jaate hain, hum to phir bhi insaan hain.",
-  "Ye bhi sach hai ke mohabbat bekaar nahi jati, yaad bankar saath rehti hai.",
-  "Jinhe hum dil me rakhte hain wo hi aksar dil tod jaate hain.",
-  "Alag ho kar bhi tumhari yaadon se juda nahi hota.",
-  "Hum to aaj bhi tumhe utna hi chahte hain, bas izhaar ka haq tumne cheen liya.",
-  "Tujhse bichhadkar bhi tujhse hi mohabat hai, ye kaise dard hai jo khatam hi nahi hota.",
-  "Zindagi me sab kuch milega, bas koi apna khud nahi milta.",
-  "Rishton me fasla tab aata hai jab baatein kam aur galatfehmiyaan zyada ho jaati hain.",
-  "Mohabbat ke safar me aksar aansuon ka saath hota hai.",
-  "Dil lagaane ki szaa dil todne wale se behtar kaun dega.",
-  "Phir dil ne ek tamannah ki, phir dil ko dard hi mila.",
-  "Khuda kare ke kabhi kisi ka dil na tuta kare, kyunki toot kar bhi jeena mushkil hota hai.",
-  "Humne dil ki kitab me har baar tumhara hi naam likha.",
-  "Tum muskura do to din ban jaata hai, warna raat bhar neend nahi aati.",
-  "Zindagi me kuch rishte hote hain jinhe todne ka haq waqt ko bhi nahi hota.",
-  "Jinhe hum sach samajh kar dil de dete hain, woh aksar jhooth nikalte hain.",
-  "Kabhi kabhi zindagi bhar ka pyaar ek pal me toot jaata hai.",
-  "Woh hume ignore karta raha, aur hum uske liye sab chhodte rahe.",
-  "Aksar log kehte hain chhod do, par koi yeh nahi kehta ke dard ka kya karu?",
-  "Mohabbat me sabse bada rog ‘wo laut aayega’ ka bharam hota hai.",
-  "Kuch log dil me aise utarte hain jaise kabhi nikalne ka irada hi na ho.",
-  "Tumhari yaad ka ek hi gunah hai, yeh bina bulaye aa jaati hai.",
-  "Uski aadat si ho gayi thi, ab aadatein asani se chhutti nahi.",
-  "Humne pyaar me sab kuch Haar diya, par jeet uski bhi na hui.",
-  "Log sach bhi kam bolte hain aur dil bhi kam rakhte hain.",
-  "Tum door hoke bhi paas lagte ho, pata nahi ye pyaar hai ya takleef.",
-  "Kabhi kabhi hum us insaan ko kho dete hain jise hum khud se zyada chahte hain.",
-  "Mohabbat me haar tab hoti hai jab koi be-wajah badalne lagta hai.",
-  "Hume dard ka koi gham nahi, gham to bas itna hai ke tum wajah the.",
-  "Tum chaho to ek pal me bhool jao, hum toh saalo tak yaad rakhte hain.",
-  "Woh badal gaya hai ye kehna aasaan hai, par kab aur kyu—ye samajhna mushkil hai."
-];
 
-let shayris = Math.floor(Math.random(shayri)*shayri.length)
-let final = shayri.at(shayris)
-console.log(final);
+app.get("/", (req, res) => {
+  try {
+    res.status(200).json({ msg: "hello this is cfi block code" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: error.message });
+  }
+});
+
+
+
+app.get("/shayri", (req, res) => {
+  try {
+
+    const shayri = [
+      "Dil ke dariya ko kabhi shor machane mat dena, dard jitna gehra ho utna chup rehna behtar hota hai.",
+      "Mohabbat me jeet unki hoti hai jo bina kahe samajh jaate hain.",
+      "Har kisi ko mukammal jahaan nahi milta, kisi ko zameen nahi milti kisi ko aasman nahi milta.",
+      "Waqt hi to hai, guzar hi jayega; zakhm kitne bhi gehre ho bhar hi jayenge.",
+      "Tum chale jaoge to sochenge hum, tumhe kaise rok lete.",
+      "Wo bewafa bhi ajeeb nikli, dil tod kar kehti hai tum badal gaye ho.",
+      "Dil dukhe to chup rehna behtar, kyunki log tasalli nahi tamasha dekhte hain.",
+      "Mohabbat me aansu tab nikalte hain jab baat dil se zyada ego ki suni jaye.",
+      "Tumhare bina ab jeena mushkil nahi, bas maza nahi aata.",
+      "Kabhi kabhi sab kuch hote hue bhi dil khali sa lagta hai.",
+      "Wo keh ke gaya tha laut kar aayega, maine ye nahi poocha tha ki kis roop me.",
+      "Rishte toot jaaye to samajh lena ke humne koi kasoor nahi kiya, bas waqt badal gaya.",
+      "Mohabbat me sabse zyada takleef us waqt hoti hai jab koi apna paraya sa lagne lage.",
+      "Aankhon me aansu tab aate hain jab alfaaz kamm pad jaate hain.",
+      "Tumhari yaadon ka bas ek hi nuksan hai, ye sone nahi deti.",
+      "Haath chhute bhi to rishta nahi chhuta karta.",
+      "Jis din tum hume bhool jaoge, us din hum mar nahi jaayenge par jeena chhod denge.",
+      "Main uss din se poochu kya guzri hogi jis din usne mujhe chhod kar kisi aur ka haath thaama hoga.",
+      "Patthar ke dil par bhi nishaan reh jaate hain, hum to phir bhi insaan hain.",
+      "Ye bhi sach hai ke mohabbat bekaar nahi jati, yaad bankar saath rehti hai.",
+      "Jinhe hum dil me rakhte hain wo hi aksar dil tod jaate hain.",
+      "Alag ho kar bhi tumhari yaadon se juda nahi hota.",
+      "Hum to aaj bhi tumhe utna hi chahte hain, bas izhaar ka haq tumne cheen liya.",
+      "Tujhse bichhadkar bhi tujhse hi mohabat hai, ye kaise dard hai jo khatam hi nahi hota.",
+      "Zindagi me sab kuch milega, bas koi apna khud nahi milta.",
+      "Rishton me fasla tab aata hai jab baatein kam aur galatfehmiyaan zyada ho jaati hain.",
+      "Mohabbat ke safar me aksar aansuon ka saath hota hai.",
+      "Dil lagaane ki szaa dil todne wale se behtar kaun dega.",
+      "Phir dil ne ek tamannah ki, phir dil ko dard hi mila.",
+      "Khuda kare ke kabhi kisi ka dil na tuta kare, kyunki toot kar bhi jeena mushkil hota hai.",
+      "Humne dil ki kitab me har baar tumhara hi naam likha.",
+      "Tum muskura do to din ban jaata hai, warna raat bhar neend nahi aati.",
+      "Zindagi me kuch rishte hote hain jinhe todne ka haq waqt ko bhi nahi hota.",
+      "Jinhe hum sach samajh kar dil de dete hain, woh aksar jhooth nikalte hain.",
+      "Kabhi kabhi zindagi bhar ka pyaar ek pal me toot jaata hai.",
+      "Woh hume ignore karta raha, aur hum uske liye sab chhodte rahe.",
+      "Aksar log kehte hain chhod do, par koi yeh nahi kehta ke dard ka kya karu?",
+      "Mohabbat me sabse bada rog ‘wo laut aayega’ ka bharam hota hai.",
+      "Kuch log dil me aise utarte hain jaise kabhi nikalne ka irada hi na ho.",
+      "Tumhari yaad ka ek hi gunah hai, yeh bina bulaye aa jaati hai.",
+      "Uski aadat si ho gayi thi, ab aadatein asani se chhutti nahi.",
+      "Humne pyaar me sab kuch Haar diya, par jeet uski bhi na hui.",
+      "Log sach bhi kam bolte hain aur dil bhi kam rakhte hain.",
+      "Tum door hoke bhi paas lagte ho, pata nahi ye pyaar hai ya takleef.",
+      "Kabhi kabhi hum us insaan ko kho dete hain jise hum khud se zyada chahte hain.",
+      "Mohabbat me haar tab hoti hai jab koi be-wajah badalne lagta hai.",
+      "Hume dard ka koi gham nahi, gham to bas itna hai ke tum wajah the.",
+      "Tum chaho to ek pal me bhool jao, hum toh saalo tak yaad rakhte hain.",
+      "Woh badal gaya hai ye kehna aasaan hai, par kab aur kyu—ye samajhna mushkil hai."
+    ];
+    let shayris = Math.floor(Math.random(shayri) * shayri.length)
+    let final = shayri.at(shayris)
+    res.status(200).json(final)
+
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: error })
+  }
+})
+
+const PORT = 8080
+
+
+
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
