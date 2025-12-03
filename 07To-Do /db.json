@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Zoheb",
+    "email": "zoheb@gmail.com",
+    "phone": "2323232132",
+    "password": "$2b$10$.tdbUVjeZUXmJcpNy3w8MOde5RDGwtVJwhhCVquo4cFNJzNIMKzxa",
+    "task": [],
+    "createdAT": "2025-12-03T07:28:47.769Z"
+  },
+  {
+    "name": "Abdullah",
+    "email": "a@gmail.com",
+    "phone": "232323",
+    "password": "$2b$10$Tr/9mzJb7Dad2X4m/iAVEuwDqW2lwYIVHswRdiz5nIWX6wUlpG99.",
+    "task": [
+      {
+        "uid": "c32d7bbc-c14c-4c22-9d74-948e334871e1",
+        "task": "complete js",
+        "description": "complete all js projects",
+        "createdAT": "2025-12-03T07:30:01.411Z"
+      }
+    ],
+    "createdAT": "2025-12-03T07:29:08.611Z"
+  }
+]
