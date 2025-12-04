@@ -1,0 +1,23 @@
+{
+  "name": "10openaiapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.0",
+    "@google/genai": "^1.31.0",
+    "dotenv": "^17.2.3",
+    "genai": "^0.0.18",
+    "groq-sdk": "^0.37.0",
+    "openai": "^6.9.1",
+    "readline-sync": "^1.4.10"
+  }
+}

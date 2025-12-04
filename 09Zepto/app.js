@@ -1,89 +1,122 @@
-import puppeteer from 'puppeteer';
-import readlineSync from 'readline-sync';
-import chalk from 'chalk';
-import figlet from 'figlet';
+#!/usr/bin/env node
+import puppeteer from "puppeteer";
+import readlineSync from "readline-sync";
+import chalk from "chalk";
+import figlet from "figlet";
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 async function banner() {
-    console.log(chalk.cyan(figlet.textSync('Zepto Bot', { horizontalLayout: 'full' })));
+    console.log(chalk.green(figlet.textSync("Zepto CLI")));
 }
 
-async function start() {
+async function startBot() {
+
     await banner();
 
-    const browser = await puppeteer.launch({ headless: false, defaultViewport: null });
-    const page = await browser.newPage();
-
-    // Go to Zepto login page
-    await page.goto('https://www.zepto.com/login', { waitUntil: 'networkidle2' });
-
-    // Wait for login page to load
-    await page.waitForTimeout(2000);
-
-    // Click "Login with Mobile" button
-    await page.evaluate(() => {
-        const btn = Array.from(document.querySelectorAll('button')).find(
-            b => b.innerText.toLowerCase().includes('mobile')
-        );
-        if (btn) btn.click();
+    const browser = await puppeteer.launch({
+        headless: false,
+        defaultViewport: null,
     });
 
-    // Wait for mobile input to appear
-    await page.waitForSelector('input[placeholder*="mobile"]', { timeout: 10000 });
+    const page = await browser.newPage();
+    await page.goto("https://www.zepto.com/login", { waitUntil: "networkidle2" });
 
-    // Type mobile number
-    const mobile = readlineSync.question(chalk.yellow('Enter your mobile number: '));
-    await page.type('input[placeholder*="mobile"]', mobile, { delay: 100 });
-    await page.click('button[type="submit"]');
+    console.log(chalk.yellow("🔥 Waiting for login popup..."));
 
-    console.log(chalk.green('✅ Mobile number submitted, waiting for OTP...'));
+    await sleep(3000);
 
-    // Enter OTP manually
-    const otp = readlineSync.question(chalk.yellow('Enter OTP received: '));
-    await page.type('input[placeholder*="OTP"]', otp, { delay: 100 });
-    await page.click('button[type="submit"]');
+    // STEP 1: CLICK ANY BUTTON THAT OPENS MOBILE LOGIN
+    const clicked = await page.evaluate(() => {
+        const buttons = [...document.querySelectorAll("button")];
 
-    // Wait for login to complete
-    await page.waitForNavigation({ waitUntil: 'networkidle2' });
-    console.log(chalk.green('✅ Logged in successfully'));
+        const possibleButtons = buttons.filter(btn =>
+            btn.innerText.toLowerCase().includes("mobile") ||
+            btn.innerText.toLowerCase().includes("login") ||
+            btn.innerText.toLowerCase().includes("continue")
+        );
 
-    // Search for product
-    const product = readlineSync.question(chalk.yellow('Enter product name to search: '));
-    const searchSelector = 'input[placeholder*="Search"]';
-    await page.waitForSelector(searchSelector);
-    await page.type(searchSelector, product, { delay: 100 });
-    await page.keyboard.press('Enter');
+        if (possibleButtons.length > 0) {
+            possibleButtons[0].click();
+            return true;
+        }
+        return false;
+    });
 
-    // Wait for search results
-    await page.waitForSelector('div[data-testid="product-card"]', { timeout: 10000 });
-
-    // Click first product
-    const productLink = await page.$('div[data-testid="product-card"] a');
-    if (!productLink) {
-        console.log(chalk.red('❌ No products found'));
-        await browser.close();
-        return;
-    }
-    await productLink.click();
-    await page.waitForTimeout(2000);
-
-    // Add to cart
-    const addToCartBtn = await page.$('button[data-testid="add-to-cart"]');
-    if (addToCartBtn) {
-        await addToCartBtn.click();
-        console.log(chalk.green(`✅ ${product} added to cart`));
-    } else {
-        console.log(chalk.red('❌ Could not find Add to Cart button'));
+    if (!clicked) {
+        console.log(chalk.red("❌ Could not find login button! UI changed."));
         await browser.close();
         return;
     }
 
-    // Go to checkout
-    await page.goto('https://www.zepto.com/cart', { waitUntil: 'networkidle2' });
-    console.log(chalk.blue('🛒 Reached checkout page. Please complete payment manually.'));
+    console.log(chalk.green("✓ Login button clicked. Waiting for input..."));
 
-    // Keep browser open for manual checkout
-    await page.waitForTimeout(600000); // 10 minutes
-    await browser.close();
+    // STEP 2: TRY MULTIPLE SELECTORS (because Zepto changes UI often)
+    const mobileSelectors = [
+        'input[placeholder*="mobile"]',
+        'input[placeholder*="Mobile"]',
+        'input[type="tel"]',
+        'input[name="phone"]',
+        'input[aria-label*="mobile"]'
+    ];
+
+    let mobileSelectorFound = null;
+
+    for (const selector of mobileSelectors) {
+        try {
+            await page.waitForSelector(selector, { timeout: 5000 });
+            mobileSelectorFound = selector;
+            break;
+        } catch { }
+    }
+
+    if (!mobileSelectorFound) {
+        console.log(chalk.red("❌ Mobile input not found! Zepto changed the UI again."));
+        await browser.close();
+        return;
+    }
+
+    console.log(chalk.green(`✓ Mobile input detected: ${mobileSelectorFound}`));
+
+    // ENTER NUMBER
+    const mobile = readlineSync.question(chalk.green("Enter your mobile number: "));
+    await page.type(mobileSelectorFound, mobile, { delay: 50 });
+
+    await page.keyboard.press("Enter");
+    console.log(chalk.green("✓ Mobile submitted. Waiting for OTP..."));
+
+    // STEP 3: OTP INPUT (Multiple selectors)
+    const otpSelectors = [
+        'input[placeholder*="OTP"]',
+        'input[type="number"]',
+        'input[aria-label*="OTP"]'
+    ];
+
+    let otpSelectorFound = null;
+
+    for (const selector of otpSelectors) {
+        try {
+            await page.waitForSelector(selector, { timeout: 15000 });
+            otpSelectorFound = selector;
+            break;
+        } catch { }
+    }
+
+    if (!otpSelectorFound) {
+        console.log(chalk.red("❌ OTP input not found! Blocked by UI update."));
+        await browser.close();
+        return;
+    }
+
+    console.log(chalk.green(`✓ OTP input detected: ${otpSelectorFound}`));
+
+    const otp = readlineSync.question(chalk.green("Enter OTP: "));
+    await page.type(otpSelectorFound, otp, { delay: 50 });
+
+    await page.keyboard.press("Enter");
+
+    await page.waitForNavigation({ waitUntil: "networkidle2" });
+    console.log(chalk.greenBright("🎉 Logged in successfully!"));
 }
 
-start();
+startBot();
